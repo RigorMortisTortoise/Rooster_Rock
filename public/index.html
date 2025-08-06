@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="CSS/main.css">
  
 </head>
-<body>
+<body style="background-image: url(./Images/rr-normal.svg);">
     <div id="heading">
   <h1>Rooster Rock</h1>
   
@@ -15,7 +15,8 @@
 
   <div id="information">
     <p>Current Level</p>
-<p id="level">Loading...</p>
+    <p id="level">Loading...</p>
+    <div id="chip">Level</div>
   <p id="message"></p>
   </div>
 
@@ -29,13 +30,19 @@
       .then(res => res.json())
       .then(data => {
         document.getElementById('level').textContent = `${data.level} ft`;
+
         const msg = document.getElementById('message');
+        const status = document.getElementById('chip');
+
         msg.textContent = data.message;
         msg.className = data.swimmable ? 'safe' : 'unsafe';
+
+        status.textContent = data.status;
       })
       .catch(() => {
         document.getElementById('level').textContent = 'Error loading water level.';
       });
+
   </script>
 </body>
 </html>

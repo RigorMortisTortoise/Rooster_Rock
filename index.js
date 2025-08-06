@@ -17,11 +17,30 @@ app.get('/water-level', async (req, res) => {
     const value = response.data.value.timeSeries[0].values[0].value[0].value;
     const feet = parseFloat(value);
 
-    res.json({
-      level: feet,
-      swimmable: feet < 12,
-      message: feet < 12 ? 'Safe to swim!' : 'Too high for swimming.'
-    });
+   let status, message;
+
+if (feet < 10) {
+  status = 'Very Low';
+  message = 'The water is unusually low — expect mud, rocks, and long walks to reach the water.';
+} else if (feet < 13) {
+  status = 'Low';
+  message = 'Water is low but swimmable — bring your sandals and maybe a sense of adventure.';
+} else if (feet < 15) {
+  status = 'Medium';
+  message = 'Conditions are pretty good! A solid day for swimming or lounging near the waterline.';
+} else {
+  status = 'High';
+  message = 'Water is high, dont tread without a kayak.';
+}
+
+res.json({
+  level: feet,
+  status,
+  message
+});
+
+
+
   } catch (error) {
     console.error('Error fetching USGS data:', error);
     res.status(500).json({ error: 'Failed to fetch water level' });

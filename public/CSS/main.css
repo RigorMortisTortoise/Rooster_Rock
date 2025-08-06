@@ -11,7 +11,7 @@ body {
   font-family: sans-serif;
   background: #e0f7fa;
   text-align: center;
-  background-image: url("/Images/rr-normal.svg");
+  background-image: url("/public/Images/rr-normal.svg");
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
@@ -35,6 +35,13 @@ body {
     width: 100%;
     max-width: 650px;
     margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px;
+
     p {
       font-size: 24px;
 
@@ -44,6 +51,11 @@ body {
         font-size: 80px;
       }
   }
+}
+
+#information > * {
+  margin: 0;
+  text-align: left;
 }
 
 h1 {
@@ -74,4 +86,30 @@ footer {
 footer a {
   color: #a00;
   text-decoration: underline dotted;
+}
+
+.chip {
+  display: inline-block;
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+  font-weight: bold;
+  color: white;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.chip.very-low {
+  background-color: #8e44ad; /* purple */
+}
+
+.chip.low {
+  background-color: #2ecc71; /* green */
+}
+
+.chip.medium {
+  background-color: #f39c12; /* orange */
+}
+
+.chip.high {
+  background-color: #e74c3c; /* red */
 }
