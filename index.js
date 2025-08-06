@@ -1,11 +1,17 @@
 const express = require('express');
 const axios = require('axios');
+const path = require('path');
+
 const app = express();
 const PORT = 3000;
 
 const USGS_URL = 'https://waterservices.usgs.gov/nwis/iv/?sites=14128870&parameterCd=00065&format=json';
 
-app.get('/', async (req, res) => {
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API endpoint to get the water level
+app.get('/water-level', async (req, res) => {
   try {
     const response = await axios.get(USGS_URL);
     const value = response.data.value.timeSeries[0].values[0].value[0].value;
@@ -17,13 +23,12 @@ app.get('/', async (req, res) => {
       message: feet < 12 ? 'Safe to swim!' : 'Too high for swimming.'
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching USGS data:', error);
     res.status(500).json({ error: 'Failed to fetch water level' });
   }
 });
 
+// Start the server
 app.listen(PORT, () => {
-  console.log(`API running at http://localhost:${PORT}`);
+  console.log(`Rooster Rock API is running at http://localhost:${PORT}`);
 });
-
-
