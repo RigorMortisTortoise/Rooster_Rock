@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rooster Rock Water Level</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #e0f7fa;
+      color: #013243;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .status {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+
+    .safe {
+      color: #2e7d32;
+    }
+
+    .unsafe {
+      color: #c62828;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: inline-block;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌊 Rooster Rock Swim Status</h1>
+  <div class="card">
+    <p id="level">Loading water level...</p>
+    <p id="message" class="status"></p>
+  </div>
+
+  <script>
+    fetch('/water-level')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('level').textContent = `Current level: ${data.level} ft`;
+        const message = document.getElementById('message');
+        message.textContent = data.message;
+        message.className = 'status ' + (data.swimmable ? 'safe' : 'unsafe');
+      })
+      .catch(err => {
+        document.getElementById('level').textContent = 'Error loading water level.';
+        document.getElementById('message').textContent = '';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
