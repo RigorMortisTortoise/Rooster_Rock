@@ -4,6 +4,8 @@
 
 * {
   box-sizing: border-box;
+  color: #284E94;
+  margin: 0;
 }
 
 
@@ -41,15 +43,28 @@ body {
     align-items: flex-start;
     justify-content: center;
     padding: 24px;
+    backdrop-filter: blur(2px);
 
     p {
-      font-size: 24px;
+      font-size: 16px;
+      font-weight: 500;
 
  
     }
      #level {
         font-size: 80px;
       }
+  }
+
+  span {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: baseline;
+
+    p {
+      margin: 0;
+    }
   }
 }
 
@@ -72,7 +87,6 @@ h1 {
 }
 
 .unsafe {
-  color: red;
   font-weight: bold;
 }
 
@@ -96,10 +110,11 @@ footer a {
   color: white;
   margin-top: 0.5rem;
   font-size: 1rem;
+  margin-left: 8px;
 }
 
 .chip.very-low {
-  background-color: #8e44ad; /* purple */
+  background-color: #2ecc71;
 }
 
 .chip.low {

@@ -1,51 +1,69 @@
-const express = require('express');
+const express = require('express'); 
 const axios = require('axios');
 const path = require('path');
 
 const app = express();
 const PORT = 3000;
 
-const USGS_URL = 'https://waterservices.usgs.gov/nwis/iv/?sites=14128870&parameterCd=00065&format=json';
+const USGS_URL = 'https://waterservices.usgs.gov/nwis/iv/?sites=14128870&parameterCd=00065&period=P1D&format=json';
 
 // Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Helper: is a Date on "today" in America/Los_Angeles?
+function isTodayInPST(date) {
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const nowStr = fmt.format(new Date());
+  const dStr = fmt.format(date);
+  return nowStr === dStr;
+}
+
 // API endpoint to get the water level
+    // Latest reading is the last item
 app.get('/water-level', async (req, res) => {
   try {
     const response = await axios.get(USGS_URL);
-    const value = response.data.value.timeSeries[0].values[0].value[0].value;
-    const feet = parseFloat(value);
+    const readings = response.data.value.timeSeries[0].values[0].value;
 
-   let status, message;
+    // Convert all readings to numbers
+    const levels = readings.map(r => parseFloat(r.value));
 
-if (feet < 10) {
+    // Latest is last
+    const feet = levels[levels.length - 1];
+    const high = Math.max(...levels);
+    const low = Math.min(...levels);
+
+let status, message;
+
+if (feet < 9) {
   status = 'Very Low';
-  message = 'The water is unusually low — expect mud, rocks, and long walks to reach the water.';
+  message = 'The water’s extra low today — you might barely get your toes wet crossing.';
 } else if (feet < 13) {
   status = 'Low';
-  message = 'Water is low but swimmable — bring your sandals and maybe a sense of adventure.';
+  message = 'A little water on your walk, but nothing to slow you down.';
 } else if (feet < 15) {
   status = 'Medium';
-  message = 'Conditions are pretty good! A solid day for swimming or lounging near the waterline.';
+  message = 'It’s a good wade — you can cross, just watch your footing.';
 } else {
   status = 'High';
-  message = 'Water is high, dont tread without a kayak.';
+  message = 'The river’s running high — better bring a kayak or stay on shore.';
 }
 
-res.json({
-  level: feet,
-  status,
-  message
-});
 
-
+    res.json({
+      level: feet,
+      high,
+      low,
+      status,
+      message
+    });
 
   } catch (error) {
     console.error('Error fetching USGS data:', error);
     res.status(500).json({ error: 'Failed to fetch water level' });
   }
 });
+
 
 // Start the server
 app.listen(PORT, () => {

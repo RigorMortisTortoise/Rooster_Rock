@@ -10,13 +10,17 @@
 <body style="background-image: url(./Images/rr-normal.svg);">
     <div id="heading">
   <h1>Rooster Rock</h1>
+  <h3>A website to check the water level for Rooster Rock state park.</h3>
   
   </div>
 
   <div id="information">
     <p>Current Level</p>
-    <p id="level">Loading...</p>
-    <div id="chip">Level</div>
+    <span> <p id="level">Loading...</p> <div id="chip">Level</div></span>
+
+    <span><p id="high-level">Loading...</p><p id="low-level">Loading...</p></span>
+
+   <!-- This is the message shown beneath the status-->
   <p id="message"></p>
   </div>
 
@@ -25,24 +29,33 @@
   <p><a href="https://waterdata.usgs.gov/monitoring-location/USGS-14128870/" target="_blank">Source: USGS Water Data</a></p>
 </footer>
 
-  <script>
-    fetch('/water-level')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('level').textContent = `${data.level} ft`;
+<script>
+  fetch('/water-level')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('level').textContent = `${data.level} ft`;
 
-        const msg = document.getElementById('message');
-        const status = document.getElementById('chip');
+      const msg = document.getElementById('message');
+      const status = document.getElementById('chip');
 
-        msg.textContent = data.message;
-        msg.className = data.swimmable ? 'safe' : 'unsafe';
+      const lowLevel = document.getElementById('low-level');
+      const highLevel = document.getElementById('high-level');
 
-        status.textContent = data.status;
-      })
-      .catch(() => {
-        document.getElementById('level').textContent = 'Error loading water level.';
-      });
+      msg.textContent = data.message;
 
-  </script>
+      lowLevel.textContent = 'Low ' + data.low;
+      highLevel.textContent = 'High ' + data.high;
+
+      // Set chip text
+      status.textContent = data.status;
+
+      // Add corresponding CSS class for styling
+      const statusClass = data.status.toLowerCase().replace(/\s+/g, '-'); // "Very Low" → "very-low"
+      status.className = `chip ${statusClass}`;
+    })
+    .catch(() => {
+      document.getElementById('level').textContent = 'Error loading water level.';
+    });
+</script>
 </body>
 </html>
